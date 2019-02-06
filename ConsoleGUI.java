@@ -4,40 +4,25 @@ import java.util.Scanner;
 
 public class ConsoleGUI {
 	private String caption;
-	private ArrayList<SimpleAction> actions = new ArrayList<SimpleAction>();
+	private ArrayList<String> actions = new ArrayList<String>();
 	
 	public void setCaption(String caption) {
 		this.caption = caption;
 	}
 	
-	
-	//it seems, not needed
-	public class SimpleAction {
-		private String name;
-		
-		public SimpleAction(String name) {
-			this.name = name;
-		}
-		
-		public void executeAction() {
-			
-		}
-	}
-	
-	public void executeAction(int key) {
+	public void executeAction(int key, Scanner keyReader) {
 		System.out.println("pressed: " + key);
 	}
 	
 	public void addAction(String name) {
-		SimpleAction act = new SimpleAction(name);
-		actions.add(act);
+		actions.add(name);
 	}
 	
 	public void startConsole(InputStream inStr) {
 		System.out.println(caption);
 		
 		for (int i = 0; i < actions.size(); i++)
-			System.out.println("--> " + (i + 1) + " <-- " + actions.get(i).name);
+			System.out.println("--> " + (i + 1) + " <-- " + actions.get(i));
 		
 		int key = 0;
 		boolean keyIsActive = true;
@@ -49,7 +34,7 @@ public class ConsoleGUI {
 				key = keyReader.nextInt();
 			
 			if (key >= 1 && key <= actions.size())
-				executeAction(key);
+				executeAction(key, keyReader);
 			else keyIsActive = false;
 		}
 		
