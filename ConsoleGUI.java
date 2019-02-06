@@ -1,8 +1,10 @@
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class ConsoleGUI {
+public abstract class ConsoleGUI {
+	private final int INVALID = 0;
 	private String caption;
 	private ArrayList<String> actions = new ArrayList<String>();
 	
@@ -10,14 +12,13 @@ public class ConsoleGUI {
 		this.caption = caption;
 	}
 	
-	public void executeAction(int key, Scanner keyReader) {
-		System.out.println("pressed: " + key);
-	}
+	public abstract void executeAction(int key);
+	public abstract void init();
 	
 	public void addAction(String name) {
 		actions.add(name);
 	}
-	
+		
 	public void startConsole(InputStream inStr) {
 		System.out.println(caption);
 		
@@ -25,21 +26,25 @@ public class ConsoleGUI {
 			System.out.println("--> " + (i + 1) + " <-- " + actions.get(i));
 		
 		int key = 0;
-		boolean keyIsActive = true;
-		Scanner keyReader = new Scanner(inStr);
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		
-		while(keyIsActive) {
+		while(true) {
 			System.out.println("Select --> key <-- from menu");
-			if (keyReader.hasNextInt())
-				key = keyReader.nextInt();
 			
-			if (key >= 1 && key <= actions.size())
-				executeAction(key, keyReader);
-			else keyIsActive = false;
+			try {
+				key = Integer.parseInt(in.readLine());
+			} catch (Exception e){
+				key = INVALID;
+			}
+					
+			if (key < 0 || key > actions.size())
+				key = INVALID;
+			
+			if (key == INVALID) System.out.println("Please enter a valid integer value");
+			else executeAction(key);
+	
 		}
-		
-		keyReader.close();
-		
+			
 	}
 	
 }
