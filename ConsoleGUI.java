@@ -13,10 +13,10 @@ public abstract class ConsoleGUI {
 	private String menuLabel;
 	private char menuKey;
 	
-	private boolean handlesDouble = false;
+	protected boolean handlesDouble = false;
 	private ConsoleGUI hndDouble;
 
-	public ConsoleGUI(String caption, ConsoleWidget widgetCntrl, String menuLabel, char menuKey, boolean handlesDouble) {
+	public ConsoleGUI(String caption, ConsoleWidget widgetCntrl, String menuLabel, char menuKey) {
 		this.caption=caption;
 		this.widgetCntrl=widgetCntrl;
 		this.menuLabel=menuLabel;
@@ -41,9 +41,9 @@ public abstract class ConsoleGUI {
 		this.caption = caption;
 	}
 
-	public void addChild(ConsoleGUI newChild, boolean canDoubles) {
+	public void addChild(ConsoleGUI newChild) {
 		children.add(newChild);
-		if(canDoubles) hndDouble=newChild;
+		if(newChild.isHandlerDouble()) hndDouble=newChild;
 		newChild.parent=this;
 	}
 	
@@ -54,14 +54,16 @@ public abstract class ConsoleGUI {
 		return res;
 	}
 	
+	public void printCaption() { System.out.println(caption); }
+	
 	public void showConsole() {
-		try {
-			if (!System.getProperty("os.name").contains("Windows")) Runtime.getRuntime().exec("clear");
-		} catch (IOException ex) {}
-		System.out.println(caption);
+		System.out.print("\033\143");
+		System.out.println();
+		printCaption();
 		for(int i=0;i<children.size();i++) System.out.println(children.get(i));
+		System.out.println();
 		if(invalidInput) System.out.print("Unknown command");
-		System.out.print("\n>");
+		System.out.print("\n:");
 		invalidInput=false;
 	}
 
